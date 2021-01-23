@@ -2,10 +2,16 @@ import random
 import json
 import pickle
 import numpy as np
+from datetime import date
+import time
 
 import nltk
 from nltk.stem import WordNetLemmatizer
 from tensorflow.keras.models import load_model
+
+today = date.today()
+t = time.localtime()
+current_time = time.strftime("%H:%M:%S", t)
 
 lemmatizer = WordNetLemmatizer()
 intents = json.loads(open('intents.json').read())
@@ -15,6 +21,7 @@ classes = pickle.load(open('classes.pkl', 'rb'))
 model = load_model('chatbotmodel.h5')
 
 print(classes)
+print(words)
 
 def clean_up_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
@@ -56,7 +63,17 @@ print("BOT is running....")
 print("Start chatting!!")
 
 while True:
-    message = input("")
+    message = input("YOU:: ")
+    if(message == "EXIT"):
+        print("Good Bye !!")
+        break
     ints = predict_class(message)
     res = get_response(ints, intents)
-    print(res)
+    if('date' in message.lower() and 'time' in message.lower()):
+        print("=>   ", "Date: ", today, ", Time: ", current_time, end="\n\n")
+    elif('date' in message.lower()):
+        print("=>   ", "Date: ", today, end="\n\n")
+    elif('time' in message.lower()):
+        print("=>   ", "Time: ", current_time, end="\n\n")
+    else:
+        print("=>   ",res,end="\n\n")
