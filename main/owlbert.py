@@ -9,9 +9,10 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 from tensorflow.keras.models import load_model
 
-today = date.today()
-t = time.localtime()
-current_time = time.strftime("%H:%M:%S", t)
+from flask import Flask, render_template
+import flask
+app = Flask(__name__)
+
 
 lemmatizer = WordNetLemmatizer()
 intents = json.loads(open('intents.json').read())
@@ -62,6 +63,7 @@ def get_response(intents_list, intents_json):
 print("BOT is running....")
 print("Start chatting!!")
 
+'''
 while True:
     message = input("YOU:: ")
     if(message == "EXIT"):
@@ -77,3 +79,32 @@ while True:
         print("=>   ", "Time: ", current_time, end="\n\n")
     else:
         print("=>   ",res,end="\n\n")
+'''
+
+@app.route('/')
+def home():
+   return render_template('index.html')
+
+
+@app.route('/owlbert/chat/', methods=['GET','POST'])
+def index():
+    today = date.today()
+    t = time.localtime()
+    current_time = time.strftime("%H:%M:%S", t)
+
+    json_data = flask.request.json
+    message = json_data["message"]
+    ints = predict_class(message)
+    res = get_response(ints, intents)
+    if('date' in message.lower() and 'time' in message.lower()):
+        return f"Date:  {today} , Time:  {current_time}"
+    elif('date' in message.lower()):
+        return f"Date:  {today}"
+    elif('time' in message.lower()):
+        return f"Time:  {current_time}"
+    else:
+        return f"{res}"
+
+
+if __name__ == '__main__':
+   app.run()

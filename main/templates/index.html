@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <title>Inject code in HTML</title>
+    <style>
+
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to OWLBERT CHAT !!</h1>
+    <div>
+      <form>
+        <label>Chat:</label><br />
+        <textarea id="chat" placeholder="Your message here.."></textarea><br />
+      </form>
+    </div>
+
+    <button id="send-btn" onclick="send()">Send</button>
+
+    <script>
+      function heading(txt , size){
+        let text = document.createElement('h' + size);
+        textNode = document.createTextNode(txt);
+        text.appendChild(textNode);
+        return text;
+      }
+     
+      function send() {
+        let chat = document.getElementById("chat").value;
+        data = {
+          "message" : chat,
+        };
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "http://localhost:5000/owlbert/chat/", true);
+
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+             document.body.appendChild(heading(chat, 4));
+             document.body.appendChild(heading(xhttp.responseText, 5));
+             document.getElementById("chat").value = "";
+          }
+        };
+        xhttp.send(JSON.stringify(data));
+      }
+    </script>
+  </body>
+</html>
