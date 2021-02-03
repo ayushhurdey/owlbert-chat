@@ -1,44 +1,260 @@
 <html>
   <head>
     <title>Inject code in HTML</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
 
+      /* #chat-none{
+        display: none;
+      }
+      #chat-box{
+        bottom: 5px;
+        width: 72%;
+        left: 3px;
+        border-radius: 60px;
+        height: 40px;
+        padding: 5px;
+        padding-left: 10px;
+      }
+      #chat-btn{
+        color: white;
+        background-color: dodgerblue;
+        bottom: 10px;
+        width: 70px;
+        border: none;
+        padding: 5px;
+        font-size: 1.2em;
+        text-align: center;
+        border-radius: 50px;
+        right: 10px;
+      } */
+
+      *{
+        margin: 0px;
+      }
+      
+      /* width */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar -track {
+        background: #222222; 
+      }
+      
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #888; 
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #cccccc; 
+      }
+
+      .container{
+        position: relative;
+        background-color: #202020;
+        color:white;
+        margin: auto;
+        width: 50%;
+        height: 92.8vh;
+        padding: 20px;
+      }
+
+      .header h1{
+        text-align: center;
+        margin-top: 0px;
+        margin-bottom: 10px;
+        background-color: #101010;
+        border-radius: 30px;
+      }
+
+      .chat-container{
+        width: 100%;
+        height: 600px; 
+        position: relative;
+        overflow-y: scroll;
+      }
+
+      .chat-container li p{
+        margin: 0px;  
+      }
+
+      .msg{
+        list-style-type:none;
+        margin-bottom: 10px;
+      }
+
+      .send-msg, .rcv-msg{
+        position: relative;
+        list-style-type: none;
+        max-width: 150px;
+        word-wrap: break-word;
+        padding: 10px;
+        border-radius: 20px;
+        font-size: 1.1em; 
+        background-color: green; 
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      .send-msg{
+          left: 60%;
+      }
+      .rcv-msg{
+         right: 30px;
+      }
+      .chat-handles{
+        position: absolute;
+        bottom: 5px;
+        /* background-color: green; */
+        width: 86%;
+        padding: 20px;
+      }
+      #chat-box{
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        background-color: #303030;
+        color: white;
+        width: 80%;
+        padding: 8px;
+        padding-left: 15px;
+        border-radius: 50px;
+        outline: none;
+        font-size: 1.1em;
+        border: 1px solid black;
+      }
+      #chat-btn{
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 80px;
+        background-color: dodgerblue;
+        color: white;
+        padding: 8px;
+        border-radius: 50px;
+        border: none;
+        outline: none;
+        font-size: 1.2em;
+      }
+
+      #chat-btn:hover{
+        cursor: pointer;
+        font-size: 1.15em;
+      }
+
+      @media only screen and (max-width : 900px){
+          .chat-handles{
+            position: fixed;
+            bottom: 10px;
+          }
+          .container{
+            width: 100%;
+          }
+          .send-msg{
+            left: 60%;
+            transition: left 2s ;
+          }
+      }
+
+      @media only screen and (max-width : 600px){
+          .container{
+            height: 100vh;
+          }
+          .chat-handles{
+            position: fixed;
+          }
+          .send-msg{
+            left: 40%;
+          }
+          #chat-box{
+            width: 70%;
+          }
+          #chat-btn{
+            right: 20px;
+          }
+      }
     </style>
   </head>
+
   <body>
-    <h1>Welcome to OWLBERT CHAT !!</h1>
+    <!--h1>Welcome to OWLBERT CHAT !!</h1>
     <div>
       <form>
-        <label>Chat:</label><br />
-        <textarea id="chat" placeholder="Your message here.."></textarea><br />
+        <label id="chat-none">Chat:</label><br />
+        <textarea id="chat" placeholder="Your message here.."></textarea>
       </form>
     </div>
+    <button id="send-btn" onclick="send()">Send</button-->
 
-    <button id="send-btn" onclick="send()">Send</button>
+
+      <div class="container">
+        <div class="header">
+          <h1>OWLBERT CHAT</h1>
+        </div>
+        <div class="chat-container">
+          <ul id = "chat-list">
+            <li class = "msg"><p class = "send-msg">Some message here</p></li>
+            <li class = "msg"><p class = "rcv-msg">Received message</p></li>
+            <li class = "msg"><p class = "send-msg">Some message here</p></li>
+            <li class = "msg"><p class = "rcv-msg">Received message</p></li>
+          </ul>
+        </div>
+        <div class="chat-handles">
+          <input type="text" id = "chat-box" placeholder = "Type your message."/>
+          <button id = "chat-btn" onclick = "send()">Send</button>
+        </div>
+      </div>
 
     <script>
-      function heading(txt , size){
-        let text = document.createElement('h' + size);
+      var input = document.getElementById('chat-box');
+      input.addEventListener('keyup', (event) => {
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          document.getElementById("chat-btn").click();
+        }
+      });
+
+      // window.setInterval( () => {
+      //   var elem = document.getElementsByClassName('chat-container')[0];
+      //   elem.scrollTop = elem.scrollHeight;
+      // }, 5000);
+
+      function list(txt, className) {
+        let li = document.createElement("li");
+        li.classList.add("msg");
+        let para = document.createElement("p");
+        para.classList.add(className);
         textNode = document.createTextNode(txt);
-        text.appendChild(textNode);
-        return text;
+        para.appendChild(textNode);
+        li.appendChild(para);
+        return li;
       }
-     
+
       function send() {
-        let chat = document.getElementById("chat").value;
+        let chat = document.getElementById("chat-box").value;
+        if(chat == "")
+          return;
         data = {
-          "message" : chat,
+          message: chat,
         };
 
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "http://localhost:5000/owlbert/chat/", true);
 
-        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
-             document.body.appendChild(heading(chat, 4));
-             document.body.appendChild(heading(xhttp.responseText, 5));
-             document.getElementById("chat").value = "";
+            var ul = document.getElementById("chat-list");
+            ul.appendChild(list(chat,"send-msg"));
+            ul.appendChild(list(xhttp.responseText,"rcv-msg"));
+            document.getElementById("chat-box").value = "";
+
+            //auto-scroller for chat window
+            var elem = document.getElementsByClassName('chat-container')[0];
+            elem.scrollTop = elem.scrollHeight;
           }
         };
         xhttp.send(JSON.stringify(data));
