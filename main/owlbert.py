@@ -4,6 +4,7 @@ import pickle
 import numpy as np
 from datetime import date
 import time
+import database
 
 import nltk
 from nltk.stem import WordNetLemmatizer
@@ -105,6 +106,17 @@ def index():
     else:
         return f"{res}"
 
+@app.route('/login-validation/', methods=['GET','POST'])
+def loginValidation():
+    username = "asmit"
+    password = "asmit@123"
+    ret = database.validateUser(username, password)
+    if(ret):
+        print("Login Successful")
+    else:
+        print("Login Failed")
+    chats = database.readChatsForUser(username)
+    return f"{chats}"
 
 if __name__ == '__main__':
    app.run()
