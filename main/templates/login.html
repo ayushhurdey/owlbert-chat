@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LOG IN</title>
+    <style>
+      body {
+        background-color: #202020;
+        font-family: cursive;
+      }
+      .login {
+        margin: auto;
+        width: 30%;
+        background-color: white;
+        height: 450px;
+        border-radius: 10px;
+      }
+
+      .heading {
+        padding: 20px;
+        text-align: center;
+        margin-top: 120px;
+      }
+
+      .users {
+        padding: 20px;
+      }
+      button {
+        border-radius: 5px;
+        background-color: lightblue;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        border: none;
+      }
+      button:hover {
+        background-color: darkturquoise;
+        font-weight: bolder;
+        border: none;
+      }
+      input[type="text"],
+      input[type="password"] {
+        border-radius: 5px;
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid gray;
+        box-sizing: border-box;
+      }
+      .container{
+        text-align: center;
+        padding-top: 16px;
+        background-color: white;
+      }
+      a{
+        color: firebrick;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login">
+      <h1 class="heading">LOG IN</h1>
+      <div class="users">
+        <label for="uname"><b>UserName</b></label>
+        <input type="text" placeholder="Enter Username" name="uname" required />
+
+        <label for="psw"><b>Password</b></label>
+        <input
+          type="password"
+          placeholder="Enter Password"
+          name="psw"
+          required
+        />
+
+        <button type="submit">Login</button>
+      </div>
+      <div class="container">
+        <span >Don't have an account?<a href="#">SIGN UP</a></span>
+      </div>
+    </div>
+  </body>
+</html>
