@@ -2,9 +2,23 @@ import sqlite3
 
 #F:\python project\owlbert-chat\main\db\users.db
 url = r"F:\project\python projects\owlbert-chat\main\db\users.db"
-conn = sqlite3.connect(url, check_same_thread=False)
+conn = ""
 
+def openConnection():
+    global conn
+    conn = sqlite3.connect(url, check_same_thread=False)
 
+def closeConnection():
+    global conn
+    conn.close()
+
+def checkUserIfPresent(username):
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE username = \""+ username + "\";")
+    if not cursor.fetchall():
+        return False
+    else:
+        return True
 
 def insertUser(username, password):
     try:
