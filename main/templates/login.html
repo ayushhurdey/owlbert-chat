@@ -69,6 +69,18 @@
       a{
         color: firebrick;
       }
+
+      @media only screen and (max-width : 900px){
+        .login{
+          width: 60%;
+        }
+      }
+
+      @media only screen and (max-width : 600px){
+        .login{
+          width: 70%;
+        }
+      }
     </style>
   </head>
   <body>
@@ -93,7 +105,7 @@
         <button type="submit"id = "login-btn">Login</button>
       </div>
       <div class="container">
-        <span >Don't have an account?<a href="#">SIGN UP</a></span>
+        <span >Don't have an account?<a href="{{ url_for('signup') }}">SIGN UP</a></span>
       </div>
     </div>
     <script>
@@ -106,7 +118,7 @@
         };
 
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "http://localhost:5000/login/", true);
+        xhttp.open("POST", "http://localhost:5000/login", true);
 
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.onreadystatechange = function () {
@@ -114,8 +126,9 @@
               let res = xhttp.responseText
               let msgElem = document.getElementById("login-msg");
               console.log(res)
-              if(res == "true"){
+              if(res != "false"){
                   console.log("inside true")
+                  localStorage.setItem('username', userName)
                   msgElem.style.display = "none";
               }
               else{

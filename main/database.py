@@ -12,6 +12,16 @@ def closeConnection():
     global conn
     conn.close()
 
+def getAllUsers():
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users;")
+    return cursor.fetchall()
+
+def getAllChats():
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM chats;")
+    return cursor.fetchall()
+
 def checkUserIfPresent(username):
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE username = \""+ username + "\";")
@@ -32,14 +42,14 @@ def insertUser(username, password):
 
 def insertChat(data):
     try:
-        conn.execute('''INSERT INTO chats
+        conn.execute('''INSERT INTO chats(username,send_msg,response_msg,timestamp) 
                         VALUES("''' + data['username'] + '''",
                         "''' +data['send_msg']+ '''",
                         "''' +data['response_msg']+ '''",
                         "'''+data['timestamp']+'''");''')
         conn.commit()
     except Exception as e:
-        print("Values not inserted in chats :",e)
+        print("!! Values not inserted in chats :",e)
     
     return True
     

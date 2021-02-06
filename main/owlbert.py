@@ -94,9 +94,9 @@ def index():
     current_time = time.strftime("%H:%M:%S", t)
 
     json_data = flask.request.json
-    send_msg = json_data["send_msg"]
+    message = json_data["send_msg"]
     username = json_data["username"]
-    timestamp = json_data["timestamp"]
+    timestamp = str(json_data["timestamp"])
 
     ints = predict_class(message)
     res = get_response(ints, intents)
@@ -110,8 +110,10 @@ def index():
     else:
         response_msg = f"{res}"
 
-    chat_data = {"username": username, "send_msg": send_msg, "response_msg": response_msg, "timestamp": timestamp}
+    chat_data = {"username": username, "send_msg": message, "response_msg": response_msg, "timestamp": timestamp}
+    database.openConnection()
     database.insertChat(chat_data)
+    database.closeConnection()
     return response_msg
 
 
@@ -129,40 +131,63 @@ def loginValidation():
     database.closeConnection()
     return f"{chats}"
 
-@app.route('/login/', methods = ['POST'])
+@app.route('/login', methods = ['GET','POST'])
 def login():
-    json_data = flask.request.json
-    username = json_data["username"]
-    password = json_data["password"]
-    database.openConnection()
-    ret = database.validateUser(username, password)
-    if(ret):
-        return "true"
+    if flask.request.method == 'POST':
+        json_data = flask.request.json
+        username = json_data["username"]
+        password = json_data["password"]
+        database.openConnection()
+        ret = database.validateUser(username, password)
+        if(ret):
+            return "true"
+        else:
+            return "false"
+        database.closeConnection()
     else:
-        return "false"
-    database.closeConnection()
+        return render_template('login.html')
 
-@app.route('/signup/', methods=['POST'])
+@app.route('/signup', methods=['GET','POST'])
 def signup():
-    json_data = flask.request.json
-    username = json_data["username"]
-    password = json_data["password"]
-    if(database.checkUserIfPresent(username)):
-        return "User already exists"
+    if flask.request.method == 'POST':
+        json_data = flask.request.json
+        username = json_data["username"]
+        password = json_data["password"]
+        database.openConnection();
+        if(database.checkUserIfPresent(username)):
+            database.closeConnection()
+            return "User already exists"
+        else:
+            database.insertUser(username,password)
+            database.closeConnection()
+            return "Signed up successfully"
     else:
-        database.insertUser(username,password)
-        return "Signed up successfully"
+         return render_template('signup.html')
 
-@app.route('/get-chats',methods=['POST'])
+@app.route('/get-chats',methods=['GET','POST'])
 def getChats():
     json_data = flask.request.json
     username = json_data["username"]
+    #username = "asmit"                                           # to be removed
+    database.openConnection()
     chats = database.readChatsForUser(username)
+    database.closeConnection()
     return chats
 
 @app.route('/')
 def loginginPage():
     return render_template('login.html')
+
+# to be removed later on - only for testing.
+@app.route('/get-all')
+def getAll():
+    database.openConnection()
+    users = database.getAllUsers()
+    chats = database.getAllChats()
+    database.closeConnection()
+    print(users)
+    print(chats)
+    return f"{users} + {chats}"
 
 if __name__ == '__main__':
    app.run()
