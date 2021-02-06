@@ -82,7 +82,7 @@ while True:
         print("=>   ",res,end="\n\n")
 '''
 
-@app.route('/')
+@app.route('/owlbert')
 def home():
    return render_template('index.html')
 
@@ -94,29 +94,75 @@ def index():
     current_time = time.strftime("%H:%M:%S", t)
 
     json_data = flask.request.json
-    message = json_data["message"]
+    send_msg = json_data["send_msg"]
+    username = json_data["username"]
+    timestamp = json_data["timestamp"]
+
     ints = predict_class(message)
     res = get_response(ints, intents)
+    response_msg = ""
     if('date' in message.lower() and 'time' in message.lower()):
-        return f"Date:  {today} , Time:  {current_time}"
+        response_msg = f"Date:  {today} , Time:  {current_time}"
     elif('date' in message.lower()):
-        return f"Date:  {today}"
+        response_msg = f"Date:  {today}"
     elif('time' in message.lower()):
-        return f"Time:  {current_time}"
+        response_msg = f"Time:  {current_time}"
     else:
-        return f"{res}"
+        response_msg = f"{res}"
+
+    chat_data = {"username": username, "send_msg": send_msg, "response_msg": response_msg, "timestamp": timestamp}
+    database.insertChat(chat_data)
+    return response_msg
+
 
 @app.route('/login-validation/', methods=['GET','POST'])
 def loginValidation():
     username = "asmit"
     password = "asmit@123"
+    database.openConnection()
     ret = database.validateUser(username, password)
     if(ret):
         print("Login Successful")
     else:
         print("Login Failed")
     chats = database.readChatsForUser(username)
+    database.closeConnection()
     return f"{chats}"
+
+@app.route('/login/', methods = ['POST'])
+def login():
+    json_data = flask.request.json
+    username = json_data["username"]
+    password = json_data["password"]
+    database.openConnection()
+    ret = database.validateUser(username, password)
+    if(ret):
+        return "true"
+    else:
+        return "false"
+    database.closeConnection()
+
+@app.route('/signup/', methods=['POST'])
+def signup():
+    json_data = flask.request.json
+    username = json_data["username"]
+    password = json_data["password"]
+    if(database.checkUserIfPresent(username)):
+        return "User already exists"
+    else:
+        database.insertUser(username,password)
+        return "Signed up successfully"
+
+@app.route('/get-chats',methods=['POST'])
+def getChats():
+    json_data = flask.request.json
+    username = json_data["username"]
+    chats = database.readChatsForUser(username)
+    return chats
+
+@app.route('/')
+def loginginPage():
+    return render_template('login.html')
 
 if __name__ == '__main__':
    app.run()
