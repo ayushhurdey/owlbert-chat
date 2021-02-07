@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OOPS!!</title>
+    <style>
+        .error{
+            margin: auto;
+            margin-top: 200px;
+            width: auto;
+            text-align: center;
+        }
+    </style>
+  </head>
+  <body>
+    <div class = "error">
+        <h1 style = "color: red">ERROR: 401</h1>
+        <h1>Authorization Required</h1>
+        <p>May be login and try again. </p>
+        <a href = "{{ url_for('login') }}">LOGIN</a>
+    </div>
+  </body>
+</html>

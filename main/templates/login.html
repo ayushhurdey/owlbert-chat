@@ -45,6 +45,7 @@
         cursor: pointer;
         width: 100%;
         border: none;
+        outline: none;
       }
       button:hover {
         background-color: darkturquoise;
@@ -60,6 +61,7 @@
         display: inline-block;
         border: 1px solid gray;
         box-sizing: border-box;
+        outline: none;
       }
       .container{
         text-align: center;
@@ -130,6 +132,7 @@
                   console.log("inside true")
                   localStorage.setItem('username', userName)
                   msgElem.style.display = "none";
+                  window.location.href = "http://localhost:5000/owlbert";
               }
               else{
                 console.log("Inside false")
