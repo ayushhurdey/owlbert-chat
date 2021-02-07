@@ -64,30 +64,13 @@ def get_response(intents_list, intents_json):
 print("BOT is running....")
 print("Start chatting!!")
 
-'''
-while True:
-    message = input("YOU:: ")
-    if(message == "EXIT"):
-        print("Good Bye !!")
-        break
-    ints = predict_class(message)
-    res = get_response(ints, intents)
-    if('date' in message.lower() and 'time' in message.lower()):
-        print("=>   ", "Date: ", today, ", Time: ", current_time, end="\n\n")
-    elif('date' in message.lower()):
-        print("=>   ", "Date: ", today, end="\n\n")
-    elif('time' in message.lower()):
-        print("=>   ", "Time: ", current_time, end="\n\n")
-    else:
-        print("=>   ",res,end="\n\n")
-'''
 
 @app.route('/owlbert')
 def home():
    return render_template('index.html')
 
 
-@app.route('/owlbert/chat/', methods=['GET','POST'])
+@app.route('/owlbert/chat/', methods=['PUT'])
 def index():
     today = date.today()
     t = time.localtime()
@@ -116,7 +99,7 @@ def index():
     database.closeConnection()
     return response_msg
 
-
+#to be removed
 @app.route('/login-validation/', methods=['GET','POST'])
 def loginValidation():
     username = "asmit"
@@ -147,9 +130,9 @@ def login():
     else:
         return render_template('login.html')
 
-@app.route('/signup', methods=['GET','POST'])
+@app.route('/signup', methods=['GET','PUT'])
 def signup():
-    if flask.request.method == 'POST':
+    if flask.request.method == 'PUT':
         json_data = flask.request.json
         username = json_data["username"]
         password = json_data["password"]
@@ -164,11 +147,10 @@ def signup():
     else:
          return render_template('signup.html')
 
-@app.route('/get-chats',methods=['GET','POST'])
+@app.route('/get-chats',methods=['POST'])
 def getChats():
     json_data = flask.request.json
     username = json_data["username"]
-    #username = "asmit"                                           # to be removed
     database.openConnection()
     chats = database.readChatsForUser(username)
     database.closeConnection()
@@ -177,6 +159,10 @@ def getChats():
 @app.route('/')
 def loginginPage():
     return render_template('login.html')
+
+@app.route('/error')
+def error():
+    return render_template('error.html')
 
 # to be removed later on - only for testing.
 @app.route('/get-all')
