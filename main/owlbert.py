@@ -4,6 +4,7 @@ import pickle
 import numpy as np
 from datetime import date
 import time
+import database
 
 import nltk
 from nltk.stem import WordNetLemmatizer
@@ -63,48 +64,116 @@ def get_response(intents_list, intents_json):
 print("BOT is running....")
 print("Start chatting!!")
 
-'''
-while True:
-    message = input("YOU:: ")
-    if(message == "EXIT"):
-        print("Good Bye !!")
-        break
-    ints = predict_class(message)
-    res = get_response(ints, intents)
-    if('date' in message.lower() and 'time' in message.lower()):
-        print("=>   ", "Date: ", today, ", Time: ", current_time, end="\n\n")
-    elif('date' in message.lower()):
-        print("=>   ", "Date: ", today, end="\n\n")
-    elif('time' in message.lower()):
-        print("=>   ", "Time: ", current_time, end="\n\n")
-    else:
-        print("=>   ",res,end="\n\n")
-'''
 
-@app.route('/')
+@app.route('/owlbert')
 def home():
    return render_template('index.html')
 
 
-@app.route('/owlbert/chat/', methods=['GET','POST'])
+@app.route('/owlbert/chat/', methods=['PUT'])
 def index():
     today = date.today()
     t = time.localtime()
     current_time = time.strftime("%H:%M:%S", t)
 
     json_data = flask.request.json
-    message = json_data["message"]
+    message = json_data["send_msg"]
+    username = json_data["username"]
+    timestamp = str(json_data["timestamp"])
+
     ints = predict_class(message)
     res = get_response(ints, intents)
+    response_msg = ""
     if('date' in message.lower() and 'time' in message.lower()):
-        return f"Date:  {today} , Time:  {current_time}"
+        response_msg = f"Date:  {today} , Time:  {current_time}"
     elif('date' in message.lower()):
-        return f"Date:  {today}"
+        response_msg = f"Date:  {today}"
     elif('time' in message.lower()):
-        return f"Time:  {current_time}"
+        response_msg = f"Time:  {current_time}"
     else:
-        return f"{res}"
+        response_msg = f"{res}"
 
+    chat_data = {"username": username, "send_msg": message, "response_msg": response_msg, "timestamp": timestamp}
+    database.openConnection()
+    database.insertChat(chat_data)
+    database.closeConnection()
+    return response_msg
+
+#to be removed
+@app.route('/login-validation/', methods=['GET','POST'])
+def loginValidation():
+    username = "asmit"
+    password = "asmit@123"
+    database.openConnection()
+    ret = database.validateUser(username, password)
+    if(ret):
+        print("Login Successful")
+    else:
+        print("Login Failed")
+    chats = database.readChatsForUser(username)
+    database.closeConnection()
+    return f"{chats}"
+
+@app.route('/login', methods = ['GET','POST'])
+def login():
+    if flask.request.method == 'POST':
+        json_data = flask.request.json
+        username = json_data["username"]
+        password = json_data["password"]
+        database.openConnection()
+        ret = database.validateUser(username, password)
+        if(ret):
+            return "true"
+        else:
+            return "false"
+        database.closeConnection()
+    else:
+        return render_template('login.html')
+
+@app.route('/signup', methods=['GET','PUT'])
+def signup():
+    if flask.request.method == 'PUT':
+        json_data = flask.request.json
+        username = json_data["username"]
+        password = json_data["password"]
+        database.openConnection();
+        if(database.checkUserIfPresent(username)):
+            database.closeConnection()
+            return "User already exists"
+        else:
+            database.insertUser(username,password)
+            database.closeConnection()
+            return "Signed up successfully"
+    else:
+         return render_template('signup.html')
+
+@app.route('/get-chats',methods=['POST'])
+def getChats():
+    json_data = flask.request.json
+    username = json_data["username"]
+    database.openConnection()
+    chats = database.readChatsForUser(username)
+    database.closeConnection()
+    return chats
+
+@app.route('/')
+def loginginPage():
+    return render_template('login.html')
+
+@app.route('/error')
+def error():
+    return render_template('error.html')
+
+# to be removed later on - only for testing.
+@app.route('/get-all')
+def getAll():
+    database.openConnection()
+    users = database.getAllUsers()
+    chats = database.getAllChats()
+    database.closeConnection()
+    print(users)
+    print(chats)
+    return f"{users} + {chats}"
 
 if __name__ == '__main__':
    app.run()

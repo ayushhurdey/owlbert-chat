@@ -26,6 +26,15 @@
       .users {
         padding: 20px;
       }
+
+      #login-msg{
+        display: none;
+      }
+
+      #login-msg p{
+        text-align: center;
+      }
+
       button {
         border-radius: 5px;
         background-color: lightblue;
@@ -36,6 +45,7 @@
         cursor: pointer;
         width: 100%;
         border: none;
+        outline: none;
       }
       button:hover {
         background-color: darkturquoise;
@@ -51,6 +61,7 @@
         display: inline-block;
         border: 1px solid gray;
         box-sizing: border-box;
+        outline: none;
       }
       .container{
         text-align: center;
@@ -60,28 +71,81 @@
       a{
         color: firebrick;
       }
+
+      @media only screen and (max-width : 900px){
+        .login{
+          width: 60%;
+        }
+      }
+
+      @media only screen and (max-width : 600px){
+        .login{
+          width: 70%;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="login">
       <h1 class="heading">LOG IN</h1>
+      <div id = "login-msg">
+        <p style = "color:red">Login failed</p>
+      </div>
       <div class="users">
         <label for="uname"><b>UserName</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" required />
+        <input type="text" placeholder="Enter Username" name="uname" id = "username" required />
 
         <label for="psw"><b>Password</b></label>
         <input
           type="password"
           placeholder="Enter Password"
           name="psw"
+          id = "password"
           required
         />
 
-        <button type="submit">Login</button>
+        <button type="submit"id = "login-btn">Login</button>
       </div>
       <div class="container">
-        <span >Don't have an account?<a href="#">SIGN UP</a></span>
+        <span >Don't have an account?<a href="{{ url_for('signup') }}">SIGN UP</a></span>
       </div>
     </div>
+    <script>
+      document.getElementById("login-btn").addEventListener("click",() => {
+        let userName = document.getElementById("username").value;
+        let pass = document.getElementById('password').value;
+        data = {
+          username: userName,
+          password: pass
+        };
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "http://localhost:5000/login", true);
+
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+              let res = xhttp.responseText
+              let msgElem = document.getElementById("login-msg");
+              console.log(res)
+              if(res != "false"){
+                  console.log("inside true")
+                  localStorage.setItem('username', userName)
+                  msgElem.style.display = "none";
+                  window.location.href = "http://localhost:5000/owlbert";
+              }
+              else{
+                console.log("Inside false")
+                msgElem.style.display = "block";
+              }
+          }
+          else{
+            let msgElem = document.getElementById("login-msg");
+            msgElem.style.display = "block";
+          }
+        };
+        xhttp.send(JSON.stringify(data));
+      })
+    </script>
   </body>
 </html>
