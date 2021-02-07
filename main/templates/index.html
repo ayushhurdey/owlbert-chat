@@ -237,8 +237,12 @@
         let chat = document.getElementById("chat-box").value;
         if(chat == "")
           return;
+        let userName = localStorage.getItem('username');
+        let time = Date.now();
         data = {
-          message: chat,
+          username: userName,
+          send_msg: chat,
+          timestamp: time
         };
 
         var xhttp = new XMLHttpRequest();

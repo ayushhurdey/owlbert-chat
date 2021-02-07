@@ -26,6 +26,15 @@
       .users {
         padding: 20px;
       }
+
+      #signup-msg{
+        display: none;
+      }
+
+      #signup-msg p{
+        text-align: center;
+      }
+
       button {
         border-radius: 5px;
         background-color: lightblue;
@@ -60,28 +69,86 @@
       a{
         color: firebrick;
       }
+
+      @media only screen and (max-width : 900px){
+        .login{
+          width: 60%;
+        }
+      }
+
+      @media only screen and (max-width : 600px){
+        .login{
+          width: 70%;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="login">
       <h1 class="heading">SIGN UP</h1>
+      <div id = "signup-msg">
+        <p></p>
+      </div>
       <div class="users">
         <label for="uname"><b>UserName</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" required />
+        <input type="text" placeholder="Enter Username" name="uname" id = "username" required />
 
         <label for="psw"><b>Password</b></label>
         <input
           type="password"
           placeholder="Enter Password"
           name="psw"
+          id = "password"
           required
         />
 
-        <button type="submit">Sign up</button>
+        <button type="submit" id = "signup-btn">Sign up</button>
       </div>
       <div class="container">
-        <span >Already have an account?<a href="#">LOG IN</a></span>
+        <span >Already have an account?<a href="{{ url_for('login') }}">LOG IN</a></span>
       </div>
     </div>
+    <script>
+      document.getElementById("signup-btn").addEventListener("click",() => {
+        let userName = document.getElementById("username").value;
+        let pass = document.getElementById('password').value;
+        var msgElem = document.getElementById("signup-msg");
+        msgElem.firstElementChild.innerHTML = "";
+        msgElem.style.display = "none";
+
+        data = {
+          username: userName,
+          password: pass
+        };
+        
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "http://localhost:5000/signup", true);
+        xhttp.setRequestHeader("Content-Type", "application/json");
+
+        xhttp.onreadystatechange =  function () {
+          console.log("here entered inside request body")
+          if (this.readyState == 4 && this.status == 200) {
+              let res = xhttp.responseText;
+              console.log(res);  
+              msgElem.firstElementChild.appendChild(document.createTextNode(res));
+              msgElem.style.display = "block";
+              if(res.includes("success")){
+                  msgElem.style.color = "green"
+                  console.log("inside success");
+              }
+              else{
+                msgElem.style.color = "red"
+                console.log("Inside unsuccess");
+              }
+          }
+          else{
+            console.log("in else.")
+            let msgElem = document.getElementById("signup-msg");
+            msgElem.style.display = "block";
+          }
+        };
+        xhttp.send(JSON.stringify(data));
+      })
+    </script>
   </body>
 </html>
