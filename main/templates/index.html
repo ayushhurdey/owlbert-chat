@@ -4,31 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
 
-      /* #chat-none{
-        display: none;
-      }
-      #chat-box{
-        bottom: 5px;
-        width: 72%;
-        left: 3px;
-        border-radius: 60px;
-        height: 40px;
-        padding: 5px;
-        padding-left: 10px;
-      }
-      #chat-btn{
-        color: white;
-        background-color: dodgerblue;
-        bottom: 10px;
-        width: 70px;
-        border: none;
-        padding: 5px;
-        font-size: 1.2em;
-        text-align: center;
-        border-radius: 50px;
-        right: 10px;
-      } */
-
       *{
         margin: 0px;
       }
@@ -71,6 +46,24 @@
         border-radius: 30px;
       }
 
+      #logout-btn{
+        position: absolute;
+        top: 22px;
+        right: 50px;
+        width: 70px;
+        padding: 8px;
+        border-radius: 10px;
+        background-color: blue;
+        color: white;
+        border: none;
+        outline: none;
+      }
+
+      #logout-btn:hover{
+        cursor: pointer;
+        background-color: darkblue;
+      }
+
       .chat-container{
         width: 100%;
         height: 600px; 
@@ -90,7 +83,7 @@
       .send-msg, .rcv-msg{
         position: relative;
         list-style-type: none;
-        max-width: 150px;
+        max-width: 200px;
         word-wrap: break-word;
         padding: 10px;
         border-radius: 20px;
@@ -108,7 +101,6 @@
       .chat-handles{
         position: absolute;
         bottom: 5px;
-        /* background-color: green; */
         width: 86%;
         padding: 20px;
       }
@@ -144,6 +136,11 @@
         cursor: pointer;
         font-size: 1.15em;
       }
+      @media only screen and (max-width : 1100px){
+        .send-msg{
+          left: 45%;
+        }
+      }
 
       @media only screen and (max-width : 900px){
           .chat-handles{
@@ -160,6 +157,10 @@
       }
 
       @media only screen and (max-width : 600px){
+          .header h1{
+            text-align: left;
+            padding-left: 20px;
+          }
           .container{
             height: 100vh;
           }
@@ -180,19 +181,11 @@
   </head>
 
   <body>
-    <!--h1>Welcome to OWLBERT CHAT !!</h1>
-    <div>
-      <form>
-        <label id="chat-none">Chat:</label><br />
-        <textarea id="chat" placeholder="Your message here.."></textarea>
-      </form>
-    </div>
-    <button id="send-btn" onclick="send()">Send</button-->
-
-
+    
       <div class="container">
         <div class="header">
           <h1>OWLBERT CHAT</h1>
+          <button id = "logout-btn">LOGOUT</button>
         </div>
         <div class="chat-container">
           <ul id = "chat-list">
@@ -217,10 +210,10 @@
         }
       });
 
-      // window.setInterval( () => {
-      //   var elem = document.getElementsByClassName('chat-container')[0];
-      //   elem.scrollTop = elem.scrollHeight;
-      // }, 5000);
+      document.getElementById('logout-btn').addEventListener('click', () => {
+          localStorage.removeItem('username');
+          window.location.href = "/login";
+      });
 
       function list(txt, className) {
         let li = document.createElement("li");
@@ -246,7 +239,7 @@
         };
 
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "http://localhost:5000/owlbert/chat/", true);
+        xhttp.open("PUT", "http://localhost:5000/owlbert/chat/", true);
 
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.onreadystatechange = function () {
@@ -263,6 +256,42 @@
         };
         xhttp.send(JSON.stringify(data));
       }
-    </script>
+
+    window.addEventListener('load', (event) => {
+        let userName = localStorage.getItem('username');
+        if(typeof localStorage.getItem('username') === 'undefined'){
+          window.location.href = "http://localhost:5000/error";
+          return;
+        }
+        else{
+          data = {
+            username: userName,
+          };
+
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("POST", "http://localhost:5000/get-chats", true);
+
+          xhttp.setRequestHeader("Content-Type", "application/json");
+          xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+              let chats = JSON.parse(xhttp.responseText);
+              for(let chat in chats){
+                console.log(chats[chat].send_msg)
+                let sendList = list(chats[chat].send_msg, "send-msg");
+                let recList = list(chats[chat].response_msg, "rcv-msg"); 
+                let ul = document.getElementById("chat-list");
+                ul.appendChild(sendList);
+                ul.appendChild(recList);
+
+                //auto-scroller for chat window
+              var elem = document.getElementsByClassName('chat-container')[0];
+              elem.scrollTop = elem.scrollHeight;
+              }
+            }
+          };
+          xhttp.send(JSON.stringify(data));
+        }
+      });
+      </script>
   </body>
 </html>
