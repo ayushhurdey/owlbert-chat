@@ -1,7 +1,7 @@
 import sqlite3
 
 #F:\python project\owlbert-chat\main\db\users.db
-url = r"F:\project\python projects\owlbert-chat\main\db\users.db"
+url = r"./db/users.db"
 conn = ""
 
 def openConnection():

@@ -11,8 +11,10 @@ from nltk.stem import WordNetLemmatizer
 from tensorflow.keras.models import load_model
 
 from flask import Flask, render_template
+from flask_cors import CORS, cross_origin
 import flask
 app = Flask(__name__)
+CORS(app)
 
 
 lemmatizer = WordNetLemmatizer()

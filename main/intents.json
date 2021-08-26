@@ -13,7 +13,7 @@
         {
             "tag" : "complements",
             "patterns" : ["Wonderful", "Awesome", "that's nice", "Great!", "Good job", "Thank you!", "that was nice!", "Great talking to you."],
-            "responses" : ["Your Welcome :)", "Thanks for the complement.", "That was nice talking to you too."]
+            "responses" : ["Your Welcome :)", "Thanks for the complement.", "Its great talking to you too."]
         },
         {
             "tag" : "date",
