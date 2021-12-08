@@ -124,7 +124,8 @@
         };
         
         var xhttp = new XMLHttpRequest();
-        xhttp.open("PUT", "http://localhost:5000/signup", true);
+        const URL_ORIGIN =  location.protocol + "//" + location.host;
+        xhttp.open("PUT", URL_ORIGIN + "/signup", true);
         xhttp.setRequestHeader("Content-Type", "application/json");
 
         xhttp.onreadystatechange =  function () {

@@ -2,7 +2,7 @@
     "intents":[
         {
             "tag" : "greetings",
-            "patterns" : ["hello" , "hey", "hi", "good day", "greetings", "what's up?","how is it going?", "How are you doing?"],
+            "patterns" : ["hello" , "hey", "hi", "good day", "greetings", "what's up?","how is it going?", "How are you doing today?", "How are you doing?"],
             "responses" : ["Hello!" , "Hey!", "What can I do for you?"]
         },
         {
@@ -37,7 +37,7 @@
         },
         {
             "tag" : "name",
-            "patterns" : ["what is your name?", "what should I call you?" , "what's your name", "who are you?" ,"can you tell me your name?"],
+            "patterns" : ["what is your name?", "what should I call you?" , "what's your name?", "who are you?" ,"can you tell me your name?"],
             "responses" : ["You can call me Owlbert!" , "I am Owlbert !" , "I'm Owlbert, the smart assistant"]
         },
         {

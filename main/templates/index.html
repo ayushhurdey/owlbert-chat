@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Inject code in HTML</title>
+    <title>Owlbert Chat</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
 
@@ -202,6 +202,8 @@
       </div>
 
     <script>
+      const URL_ORIGIN =  location.protocol + "//" + location.host;
+
       var input = document.getElementById('chat-box');
       input.addEventListener('keyup', (event) => {
         if (event.keyCode === 13) {
@@ -239,7 +241,7 @@
         };
 
         var xhttp = new XMLHttpRequest();
-        xhttp.open("PUT", "http://localhost:5000/owlbert/chat/", true);
+        xhttp.open("PUT", URL_ORIGIN + "/owlbert/chat/", true);
 
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.onreadystatechange = function () {
@@ -260,7 +262,7 @@
     window.addEventListener('load', (event) => {
         let userName = localStorage.getItem('username');
         if(typeof localStorage.getItem('username') === 'undefined'){
-          window.location.href = "http://localhost:5000/error";
+          window.location.href = URL_ORIGIN + "/error";
           return;
         }
         else{
@@ -269,7 +271,7 @@
           };
 
           var xhttp = new XMLHttpRequest();
-          xhttp.open("POST", "http://localhost:5000/get-chats", true);
+          xhttp.open("POST", URL_ORIGIN + "/get-chats", true);
 
           xhttp.setRequestHeader("Content-Type", "application/json");
           xhttp.onreadystatechange = function () {
