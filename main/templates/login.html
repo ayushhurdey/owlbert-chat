@@ -120,7 +120,8 @@
         };
 
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "http://localhost:5000/login", true);
+        const URL_ORIGIN =  location.protocol + "//" + location.host;
+        xhttp.open("POST", URL_ORIGIN + "/login", true);
 
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.onreadystatechange = function () {
@@ -132,7 +133,7 @@
                   console.log("inside true")
                   localStorage.setItem('username', userName)
                   msgElem.style.display = "none";
-                  window.location.href = "http://localhost:5000/owlbert";
+                  window.location.href = URL_ORIGIN + "/owlbert";
               }
               else{
                 console.log("Inside false")
